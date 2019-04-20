@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 /********************************************************************************************
  *                                                                                          *
@@ -22,9 +22,8 @@
  *   '',  'bb'  => 'bb'
  */
 function concatenateStrings(value1, value2) {
-    throw new Error('Not implemented');
+  return value1 + value2;
 }
-
 
 /**
  * Returns the length of given string.
@@ -38,7 +37,7 @@ function concatenateStrings(value1, value2) {
  *   ''      => 0
  */
 function getStringLength(value) {
-    throw new Error('Not implemented');
+  return value.length;
 }
 
 /**
@@ -55,7 +54,7 @@ function getStringLength(value) {
  *   'Chuck','Norris'  => 'Hello, Chuck Norris!'
  */
 function getStringFromTemplate(firstName, lastName) {
-    throw new Error('Not implemented');
+  return `Hello, ${firstName} ${lastName}!`;
 }
 
 /**
@@ -69,9 +68,8 @@ function getStringFromTemplate(firstName, lastName) {
  *   'Hello, Chuck Norris!' => 'Chuck Norris'
  */
 function extractNameFromTemplate(value) {
-    throw new Error('Not implemented');
+  return value.slice(7, -1);
 }
-
 
 /**
  * Returns a first char of the given string.
@@ -84,7 +82,7 @@ function extractNameFromTemplate(value) {
  *   'cat'       => 'c'
  */
 function getFirstChar(value) {
-    throw new Error('Not implemented');
+  return value.slice(0, 1);
 }
 
 /**
@@ -99,7 +97,7 @@ function getFirstChar(value) {
  *   '\tHello, World! ' => 'Hello, World!'
  */
 function removeLeadingAndTrailingWhitespaces(value) {
-    throw new Error('Not implemented');
+  return value.trim();
 }
 
 /**
@@ -114,7 +112,7 @@ function removeLeadingAndTrailingWhitespaces(value) {
  *   'cat', 3 => 'catcatcat'
  */
 function repeatString(value, count) {
-    throw new Error('Not implemented');
+    return value.repeat(count);
 }
 
 /**
@@ -130,7 +128,7 @@ function repeatString(value, count) {
  *   'ABABAB','BA' => 'ABAB'
  */
 function removeFirstOccurrences(str, value) {
-    throw new Error('Not implemented');
+  return str.replace(value, '');
 }
 
 /**
@@ -145,9 +143,8 @@ function removeFirstOccurrences(str, value) {
  *   '<a>' => 'a'
  */
 function unbracketTag(str) {
-    throw new Error('Not implemented');
+  return str.slice(1, -1);
 }
-
 
 /**
  * Converts all characters of the specified string into the upper case
@@ -160,7 +157,7 @@ function unbracketTag(str) {
  *  'abcdefghijklmnopqrstuvwxyz' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
  */
 function convertToUpperCase(str) {
-    throw new Error('Not implemented');
+  return str.toUpperCase();
 }
 
 /**
@@ -174,7 +171,7 @@ function convertToUpperCase(str) {
  *   'info@gmail.com' => ['info@gmail.com']
  */
 function extractEmails(str) {
-    throw new Error('Not implemented');
+  return str.split(';');
 }
 
 /**
@@ -201,7 +198,10 @@ function extractEmails(str) {
  *
  */
 function getRectangleString(width, height) {
-    throw new Error('Not implemented');
+  return '\u250C' + '\u2500'.repeat(width - 2) +'\u2510\n' 
+         + ('\u2502' + '\u0020'.repeat(width - 2) + '\u2502\n')
+           .repeat(height - 2)
+         + '\u2514' + '\u2500'.repeat(width - 2) + '\u2518\n';
 }
 
 
@@ -221,7 +221,12 @@ function getRectangleString(width, height) {
  *
  */
 function encodeToRot13(str) {
-    throw new Error('Not implemented');
+  return str.replace(/[a-z]/gi, (c) => 
+           String.fromCharCode(
+             (c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26
+           )
+         );
+    
 }
 
 /**
@@ -238,9 +243,9 @@ function encodeToRot13(str) {
  *   isString(new String('test')) => true
  */
 function isString(value) {
-    throw new Error('Not implemented');
+  return 'string' === {}.toString.call(value).slice(-7, -1)
+      .toLowerCase();
 }
-
 
 /**
  * Returns playid card id.
@@ -267,7 +272,13 @@ function isString(value) {
  *   'K♠' => 51
  */
 function getCardId(value) {
-    throw new Error('Not implemented');
+  let start = value.slice(0, 1);
+  let end = encodeURI(value).slice(-1);
+  let number = 0;
+        
+  return number = (Number(start) ? (Number(start) == 1 ? 9 : start - 1) : number)  
+         + (start == 'J' ? 10 : start == 'Q' ? 11 : start == 'K' ? 12 : 0) 
+         + (Number(end) == 3 ? 0 : Number(end) == 6 ? 13 : Number(end) == 5 ? 26 : 39);
 }
 
 
