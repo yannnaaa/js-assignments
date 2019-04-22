@@ -1,3 +1,4 @@
+debiger;
 'use strict';
 
 /**********************************************************************************************
@@ -185,11 +186,7 @@ function logger(func, logFunc) {
  *   partialUsingArguments(fn, 'a','b','c','d')() => 'abcd'
  */
 function partialUsingArguments(fn) {
-  let [, ...rest] = arguments;
-  
-  return function () {  
-    return rest.concat([...arguments]).join('');
-  }    
+  throw new Error('Not implemented');
 }
 
 /**
