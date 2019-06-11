@@ -7,20 +7,64 @@
  *
  * @return {array}
  *
+ *       ...
  * Example of return :
  *  [
- *     { abbreviation : 'N',     azimuth : 0.00 ,
+ *     { abbreviation : 'N',     azimuth : 0.00 },
  *     { abbreviation : 'NbE',   azimuth : 11.25 },
  *     { abbreviation : 'NNE',   azimuth : 22.50 },
- *       ...
  *     { abbreviation : 'NbW',   azimuth : 348.75 }
  *  ]
  */
 function createCompassPoints() {
-    throw new Error('Not implemented');
-    var sides = ['N','E','S','W'];  // use array of cardinal directions only!
-}
+    
+  let sides = ['N','E','S','W'];
+  let x = 11.25;  
+  let az = -x; 
+  let arr = []; 
+      
+  sides.filter( (c,k) => k % 2 === 0 ).forEach( (b, j) => {
+    sides.forEach( (a,i,m) => {
+      let next = ( a === 'W' ? m[0] : m[i+1] );
+      let prev = m[i-1];
+	    
+      if ( ( a === 'N' && az < 90 ) || ( a === 'S' && az >= 168 ) ) {
+        arr.push( {abbreviation: `${a}`, azimuth: az += x} );
+	arr.push( {abbreviation: `${a}b${next}`, azimuth: az += x} );
+	arr.push( {abbreviation: `${a}${a}${next}`, azimuth: az += x} );
+	arr.push( {abbreviation: `${a}${next}b${a}`, azimuth: az += x} );
+	arr.push( {abbreviation: `${a}${next}`, azimuth: az += x} );
+	arr.push( {abbreviation: `${a}${next}b${next}`, azimuth: az += x} );
+      }
+      
+      if ( (a === 'E' && az < 135 ) || ( a === 'W' && (az > 225 && az < 293) ) ) {
+        arr.push( {abbreviation: `${a}${prev}${a}`, azimuth: az += x} );
+        arr.push( {abbreviation: `${a}b${prev}`, azimuth: az += x} );
+        arr.push( {abbreviation: `${a}`, azimuth: az += x} );
+        arr.push( {abbreviation: `${a}b${next}`, azimuth: az += x} ); 
+        arr.push( {abbreviation: `${a}${next}${a}`, azimuth: az += x} );
+      }
+      
+      if ( ( a === 'W' && az > 290 ) || ( a === 'S' && az < 169 ) ) {
+        arr.push( {abbreviation: ( a === 'W' ? `${m[0]}` : `${a}` )
+	  + ( a === 'W' ? `${a}` : `${prev}` ) + `b`
+	  + ( a === 'W' ? `${a}` : `${prev}` ), azimuth: az += x} );
+	arr.push( {abbreviation: ( a === 'W' ? `${m[0]}` : `${a}` )
+	  + ( a === 'W' ? `${a}` : `${prev}` ), azimuth: az += x} );
+	arr.push( {abbreviation: ( a === 'W' ? `${m[0]}` : `${a}` )
+	  + ( a === 'W' ? `${a}` : `${prev}` ) + `b`
+	  + ( a === 'W' ? `${m[0]}` : `${a}` ), azimuth: az += x} );
+	arr.push( {abbreviation: ( a === 'W' ? `${m[0]}` : `${a}` )
+	  + ( a === 'W' ? `${m[0]}` : `${a}` )
+	  + ( a === 'W' ? `${a}` : `${prev}` ), azimuth: az += x} );
+	arr.push( {abbreviation: ( a === 'W' ? `${m[0]}` : `${a}` ) + `b`
+	  + ( a === 'W' ? `${a}` : `${prev}` ), azimuth: az += x} );
+      }      
+    })
+  });     	    
 
+  return arr; 
+}
 
 /**
  * Expand the braces of the specified string.
@@ -55,10 +99,82 @@ function createCompassPoints() {
  *
  *   'nothing to do' => 'nothing to do'
  */
-function* expandBraces(str) {
-    throw new Error('Not implemented');
-}
 
+function* expandBraces(str) {  
+
+  let _str = str; 
+  let idxOpenBrace = _str.indexOf('{');
+  let arrEnd = [];
+  let arrInt = [];
+  let arr = [];     
+  let strBefore = '';
+  let idxOpenNextBrace, idxCloseBrace,
+      strBeforeBrace, strAfterBrace, intBrace;
+
+  if ( idxOpenBrace < 0 ) {      
+    arrEnd.push(_str);
+    _str = '';       
+  }  
+        
+  while ( !!_str && idxOpenBrace >= 0 ) {   
+    idxCloseBrace = _str.indexOf( '}' );
+    idxOpenNextBrace = _str.indexOf( '{',idxOpenBrace + 1 );        
+         
+    if ( idxCloseBrace > idxOpenNextBrace && idxOpenNextBrace > 0 && idxCloseBrace > 0 ) {            
+      strBeforeBrace = _str.slice( 0,( _str.lastIndexOf( ',',idxOpenNextBrace ) 
+        + 1 || idxOpenBrace + 1 ) );   
+      strAfterBrace = _str.slice( _str.indexOf( ',',idxCloseBrace ) || idxCloseBrace + 1 );                 
+      _str = _str.slice( strBeforeBrace.length, -( strAfterBrace.length ) );                                     
+      idxOpenBrace = _str.indexOf('{');
+      intBrace = true;
+    
+    } else { 
+  
+      if ( idxOpenBrace >= 0 && idxCloseBrace > 0 ) {  
+        strBefore = _str.slice( 0,idxOpenBrace );
+        arr = _str.slice( idxOpenBrace + 1,idxCloseBrace ).split(',');              
+                          
+        if ( arrInt.length === 0 ) {
+        
+          for ( let i = 0; i < arr.length; i++ ) {
+            arrInt.push( strBefore + arr[i] );
+          } 
+             
+        } else {
+                    
+          for ( let j = 0; j < arrInt.length; j++ ) {
+
+            for ( let k = 0; k < arr.length; k++ ) {
+              arrEnd.push( arrInt[j] + strBefore + arr[k] );
+            }
+          }  
+          
+          arrInt.length = 0;
+          arrEnd.forEach( a => arrInt.push(a) );
+        };        
+        
+        _str =  _str.slice( idxCloseBrace + 1 );
+        idxOpenBrace = _str.indexOf('{');
+        arrEnd.length === 0 && idxOpenBrace < 0
+          ? arrEnd = arrInt.map( a => a += _str ) 
+          : arrEnd = arrEnd.map( a => a += _str ); 
+                  
+      } 
+                   
+      if ( intBrace ) {      
+        _str = strBeforeBrace + arrEnd.join(',') + strAfterBrace;               
+        arrInt = [];
+        arrEnd = [];            
+        idxOpenBrace = _str.indexOf('{'); 
+        intBrace = false;    
+      }            
+    }            
+  }
+    
+  for ( let i = 0; i < arrEnd.length; i++ ) {
+    yield arrEnd[i];
+  }    
+}
 
 /**
  * Returns the ZigZag matrix
@@ -87,8 +203,34 @@ function* expandBraces(str) {
  *          [ 9,10,14,15 ]]
  *
  */
+ 
 function getZigZagMatrix(n) {
-    throw new Error('Not implemented');
+
+  let k = 0;
+  let d = 1;
+  let arr = Array.from( {length: n}, ( (a, i) => Array.from( {length: n} ) ) ) ; 
+
+  for ( let i=0; i<n; i++ ) {
+    
+    for ( let j = 0; j <= i; j++ ) {      
+      d % 2 === 0 ? arr[j][i-j] = k : arr[i-j][j] = k;
+      k++;        
+    }
+    
+    d++;
+  }
+
+  for ( let j = 1; j < n; j++ ) {
+    
+    for ( let i = 0; i <= n - 1 - j; i++ ) {
+      d % 2 === 0 ? arr[j+i][n-1-i] = k : arr[n-1-i][j+i] = k;
+      k++;
+    }
+    
+    d++;
+  }
+  
+  return arr;
 }
 
 
@@ -112,8 +254,57 @@ function getZigZagMatrix(n) {
  * [[0,0], [0,1], [1,1], [0,2], [1,2], [2,2], [0,3], [1,3], [2,3], [3,3]] => false
  *
  */
+ 
 function canDominoesMakeRow(dominoes) {
-    throw new Error('Not implemented');
+  
+  let arrDominoesCopy = dominoes;
+  let countDominoes = dominoes.length;
+  let arrDoublesDomino = [];
+  let arrAllDominoesValues = [];
+  let arrNotCouple = [];
+  
+  for ( let j = 0; j < countDominoes; j++ ) {
+
+    if ( arrDominoesCopy[j][0] === arrDominoesCopy[j][1] ) {
+           
+      arrDoublesDomino = arrDominoesCopy.splice(j,1);
+      countDominoes--;
+     
+      for (let i = 0; i < arrDominoesCopy.length; i++) { 
+                
+        if ( arrDominoesCopy[i][0] === arrDoublesDomino[0][0]
+            || arrDominoesCopy[i][1] === arrDoublesDomino[0][0] ) {
+         
+          arrDoublesDomino = [];
+          j--;
+          break;                    
+        }         
+      }      
+    } 
+    
+    if ( arrDominoesCopy.length && arrDoublesDomino.length ) return false;
+  }    
+   
+  if ( arrDominoesCopy.length && arrDoublesDomino.length ) return false;
+
+  arrAllDominoesValues = arrDominoesCopy.join(',').split(',')
+    .map( a => a = Number(a) );
+  
+  for ( let i = 0; i <= arrAllDominoesValues.length/2; i++ ) {
+    
+    if ( i > 1 ) return false;  
+    
+    for ( let j = i+1; j < arrAllDominoesValues.length; j++ ) { 
+    
+      if ( arrAllDominoesValues[i] === arrAllDominoesValues[j] ) {
+        arrAllDominoesValues.splice(i,1);
+        arrAllDominoesValues.splice(j-1,1);  
+        i--;
+      }
+    }    
+  }
+  
+  return true;    
 }
 
 
@@ -135,9 +326,37 @@ function canDominoesMakeRow(dominoes) {
  * [ 1, 4, 5 ]            => '1,4,5'
  * [ 0, 1, 2, 5, 7, 8, 9] => '0-2,5,7-9'
  * [ 1, 2, 4, 5]          => '1,2,4,5'
+ *
+ *
  */
+ 
 function extractRanges(nums) {
-    throw new Error('Not implemented');
+  let str = '';
+  let arr = [];
+  let j = 0; 
+  
+  arr.push(nums[0]);
+  
+  for ( let i = 1; i <= nums.length; i++ ) {
+       
+    if ( arr[j] + 1 === nums[i] ) {
+      arr.push(nums[i]);
+      j++;           
+    
+    } else {
+
+      if ( arr.length > 2 ) {      
+        str = `${str}${( str !== '' ? ',' : '' )}${arr[0]}-${arr[arr.length - 1]}`;
+      
+      } else {        
+        str = `${str}${( str !== '' ? ',' : '' )}${arr.join(',')}`;
+      }
+      
+      arr = [nums[i]]; 
+      j = 0;
+    }      
+  }
+  return str;  
 }
 
 module.exports = {
