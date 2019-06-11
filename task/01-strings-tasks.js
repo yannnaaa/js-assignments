@@ -7,8 +7,6 @@
  *                                                                                          *
  ********************************************************************************************/
 
-
-
 /**
  * Returns the result of concatenation of two strings.
  *
@@ -280,7 +278,6 @@ function getCardId(value) {
          + (start == 'J' ? 10 : start == 'Q' ? 11 : start == 'K' ? 12 : 0) 
          + (Number(end) == 3 ? 0 : Number(end) == 6 ? 13 : Number(end) == 5 ? 26 : 39);
 }
-
 
 module.exports = {
     concatenateStrings: concatenateStrings,

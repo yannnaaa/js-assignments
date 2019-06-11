@@ -6,7 +6,6 @@
  * https://en.wikipedia.org/wiki/Points_of_the_compass#32_cardinal_points
  *
  * @return {array}
- *
  *       ...
  * Example of return :
  *  [

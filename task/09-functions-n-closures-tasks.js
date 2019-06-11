@@ -10,7 +10,6 @@
  *                                                                                            *
  **********************************************************************************************/
 
-
 /**
  * Returns the functions composition of two specified functions f(x) and g(x).
  * The result of compose is to be a function of one argument, (lets call the argument x),
