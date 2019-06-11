@@ -8,7 +8,6 @@
  *                                                                                          *
  ********************************************************************************************/
 
-
 /**
  * Returns the lines sequence of "99 Bottles of Beer" song:
  *
@@ -152,7 +151,21 @@ function* depthTraversalTree(root) {
  */
  
 function* breadthTraversalTree(root) {
-  throw new Error('Not implemented');
+  const currRoots = [root];
+  
+  yield root;   
+       
+  while(currRoots.length) {
+    const currRoot = currRoots.shift();
+
+    if(currRoot.children){         
+      for (let i = 0; i < currRoot.children.length; i++) {
+        currRoots.push(currRoot.children[i]);
+  
+        yield currRoot.children[i];
+      }                 
+    }
+  }
 }
 
 /**
