@@ -7,7 +7,6 @@
  *                                                                                          *
  ********************************************************************************************/
 
-
 /**
  * Returns the regexp that matches a GUID string representation
  * '{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}',
@@ -31,9 +30,8 @@
  * @return {RegExp}
  */
 function getRegexForGuid() {
-   throw new Error('Not implemented');
+  return /{[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}}/i;
 }
-
 
 /**
  * Returns the regexp that matches all the strings from first column
@@ -53,9 +51,8 @@ function getRegexForGuid() {
  *
  */
 function getRegexForPitSpot() {
-   throw new Error('Not implemented');
+  return /(s|re|pi).+/;
 }
-
 
 /**
  * Returns the regexp that matches all IPv4 strings in
@@ -72,9 +69,8 @@ function getRegexForPitSpot() {
  * @return {RegExp}
  */
 function getRegexForIPv4() {
-   throw new Error('Not implemented');
+  return /^(([01]?\d\d?|2[0-4]\d|25[0-5]).){3}([01]?\d\d?|2[0-4]\d|25[0-5])$/;
 }
-
 
 /**
  * Returns the regexp that matches all SSN (Social Security Number) codes in
@@ -91,9 +87,8 @@ function getRegexForIPv4() {
  * @return {RegExp}
  */
 function getRegexForSSN() {
-   throw new Error('Not implemented');
+  return /^(?!000)\d{3}-(?!00)\d{2}-(?!0000)\d{4}$/;
 }
-
 
 /**
  * Returns the password validator regex.
@@ -116,9 +111,8 @@ function getRegexForSSN() {
  *   'Pa55'.match(validator) => false
  */
 function getPasswordValidator(minLength) {
-   throw new Error('Not implemented');
+  return new RegExp(`^(?=.*[\\d])(?=.*[A-Z])(?=.*[a-z])[A-Za-z0-9]{${minLength},}$`);
 }
-
 
 module.exports = {
     getRegexForGuid: getRegexForGuid,
